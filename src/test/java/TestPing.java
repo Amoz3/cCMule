@@ -1,10 +1,7 @@
 import socket.Packet;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class TestPing {
@@ -13,15 +10,24 @@ public class TestPing {
 
     // ping the bot to make it log in
     public static void main(String[] args) throws IOException {
+        System.out.println(callMule());
+    }
 
+    private static String callMule() {
         Packet testPacket = new Packet("weedman bob", 165);
-        Socket socket = new Socket(SERVER_IP, SERVER_PORT);
-
-        ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-        outputStream.writeObject(testPacket);
-        outputStream.flush();
-
-        socket.close();
-        System.exit(0);
+        try (Socket socket = new Socket(SERVER_IP,SERVER_PORT)) {
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            outputStream.writeObject(testPacket);
+            outputStream.flush();
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            Packet responsePacket = (Packet) inputStream.readObject();
+            System.out.println(responsePacket.getUsername());
+            socket.close();
+            return responsePacket.getUsername();
+        } catch(IOException e){
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

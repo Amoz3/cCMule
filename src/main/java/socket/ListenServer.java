@@ -1,7 +1,9 @@
 package socket;
 
 import config.Config;
+import org.dreambot.api.Client;
 import org.dreambot.api.methods.MethodProvider;
+import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.script.ScriptManager;
 
 import java.awt.*;
@@ -27,6 +29,10 @@ public class ListenServer implements Runnable{
                     MethodProvider.log(Color.CYAN, "[SERVER] received - " + recPacket.getUsername() + " - " + recPacket.getWorldNum());
                     config.muleQueueAdd(recPacket);
                 }
+                Packet sendPacket = new Packet(Players.localPlayer().getName(), 0);
+                outStream.writeObject(sendPacket);
+                outStream.flush();
+                MethodProvider.log(Color.CYAN, "[SERVER] sending our username to bot...");
             } catch (IOException e) {
                 MethodProvider.logError(e);
                 throw new RuntimeException(e);
