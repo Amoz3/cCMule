@@ -1,10 +1,12 @@
 package socket;
 
-public class Packet {
+import java.io.Serializable;
+
+public class Packet implements Serializable {
     private String username;
     private int worldNum;
 
-    Packet(String username, int worldNum) {
+    public Packet(String username, int worldNum) {
         this.username = username;
         this.worldNum = worldNum;
     }

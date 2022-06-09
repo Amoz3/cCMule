@@ -1,7 +1,6 @@
 package config;
 
 import socket.Packet;
-import sun.misc.Queue;
 
 import java.util.LinkedList;
 
@@ -11,7 +10,7 @@ public class Config {
     public static Config getConfig() {
         return config;
     }
-    private LinkedList<Packet> muleQueue;
+    private LinkedList<Packet> muleQueue = new LinkedList<Packet>();
 
     public LinkedList<Packet> getMuleQueue() {
         return muleQueue;
