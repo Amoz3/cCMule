@@ -27,6 +27,10 @@ public class ListenServer implements Runnable{
                 Packet recPacket = (Packet) inStream.readObject();
                 if (recPacket != null) {
                     MethodProvider.log(Color.CYAN, "[SERVER] received - " + recPacket.getUsername() + " - " + recPacket.getWorldNum());
+                    if (recPacket.getUsername().equals("weedman bob")) {
+                        MethodProvider.log(Color.CYAN, "killing server, cya lata mon");
+                        break;
+                    }
                     config.muleQueueAdd(recPacket);
                 }
                 Packet sendPacket = new Packet(Players.localPlayer().getName(), 0);
