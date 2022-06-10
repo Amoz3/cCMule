@@ -65,26 +65,19 @@ public class Main extends AbstractScript {
     @Override
     public void onExit() {
         // this is to make sure the server closes down
-        callMule();
+        killServer();
     }
 
     public static final String SERVER_IP = "127.0.0.1";
     public static final int SERVER_PORT = 9091;
-    private static String callMule() {
+    private void killServer() {
         Packet testPacket = new Packet("weedman bob", 165);
         try (Socket socket = new Socket(SERVER_IP,SERVER_PORT)) {
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             outputStream.writeObject(testPacket);
             outputStream.flush();
-            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-            Packet responsePacket = (Packet) inputStream.readObject();
-            System.out.println(responsePacket.getUsername());
-            socket.close();
-            return responsePacket.getUsername();
-        } catch(IOException e){
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+
+        } catch(IOException ignored){
         }
     }
 
