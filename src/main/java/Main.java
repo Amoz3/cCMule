@@ -20,6 +20,25 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+
+/**
+ *
+ *          {
+ *       {   }
+ *        }_{ __{
+ *     .-{   }   }-.
+ *    (   }     {   )
+ *    |`-.._____..-'|
+ *    |             ;--.
+ *    |            (__  \
+ *    |             | )  )
+ *    |             |/  /
+ *    |             /  /    -Look at how delicious my americano looks-
+ *    |            (  /     -Amoz jun 10 2022-
+ *    \             y'
+ *     `-.._____..-'
+ *
+ */
 @ScriptManifest(category = Category.MISC, name = "cCMule", author = "camalCase", version = 1.01)
 public class Main extends AbstractScript {
     Config config = Config.getConfig();
