@@ -1,6 +1,6 @@
 package config;
 
-import socket.Packet;
+import org.dreambot.util.Packet;
 
 import java.util.LinkedList;
 

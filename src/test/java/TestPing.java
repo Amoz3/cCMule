@@ -1,6 +1,5 @@
-import socket.Packet;
+import org.dreambot.util.Packet;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 

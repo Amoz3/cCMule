@@ -12,11 +12,10 @@ import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.wrappers.interactive.Player;
 import socket.ListenServer;
-import socket.Packet;
+import org.dreambot.util.Packet;
 
 import java.awt.*;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
@@ -39,7 +38,7 @@ import java.net.Socket;
  *     `-.._____..-'
  *
  */
-@ScriptManifest(category = Category.MISC, name = "cCMule", author = "camalCase", version = 1.01)
+@ScriptManifest(category = Category.MISC, name = "cCMule", author = "camalCase", version = 1.2)
 public class Main extends AbstractScript {
     Config config = Config.getConfig();
     @Override
@@ -72,6 +71,8 @@ public class Main extends AbstractScript {
                 return 1000;
             }
             if (Trade.isOpen() && Trade.hasAcceptedTrade(TradeUser.THEM)) {
+                Trade.acceptTrade();
+                MethodProvider.sleep(3600, 4000);
                 Trade.acceptTrade();
                 log(Color.YELLOW, "TRADE ACCEPTED :D, popping - " + currentPacket.getUsername() + " from queue");
                 config.muleQueuePop();

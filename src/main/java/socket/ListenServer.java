@@ -1,10 +1,10 @@
 package socket;
 
 import config.Config;
-import org.dreambot.api.Client;
 import org.dreambot.api.methods.MethodProvider;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.script.ScriptManager;
+import org.dreambot.util.Packet;
 
 import java.awt.*;
 import java.io.*;
@@ -41,6 +41,7 @@ public class ListenServer implements Runnable{
                 MethodProvider.logError(e);
                 throw new RuntimeException(e);
             } catch (ClassNotFoundException e) {
+                MethodProvider.log(e);
                 throw new RuntimeException(e);
             }
         }

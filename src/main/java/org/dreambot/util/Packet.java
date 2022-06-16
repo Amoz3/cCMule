@@ -1,4 +1,4 @@
-package socket;
+package org.dreambot.util;
 
 import java.io.Serializable;
 
