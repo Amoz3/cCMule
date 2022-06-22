@@ -2,6 +2,8 @@ import config.Config;
 import org.dreambot.api.Client;
 import org.dreambot.api.methods.MethodProvider;
 import org.dreambot.api.methods.interactive.Players;
+import org.dreambot.api.methods.tabs.Tab;
+import org.dreambot.api.methods.tabs.Tabs;
 import org.dreambot.api.methods.trade.Trade;
 import org.dreambot.api.methods.trade.TradeUser;
 import org.dreambot.api.methods.world.Worlds;
@@ -10,7 +12,10 @@ import org.dreambot.api.randoms.RandomEvent;
 import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
+import org.dreambot.api.script.listener.InventoryListener;
+import org.dreambot.api.utilities.Timer;
 import org.dreambot.api.wrappers.interactive.Player;
+import org.dreambot.api.wrappers.items.Item;
 import socket.ListenServer;
 import org.dreambot.util.Packet;
 
@@ -38,9 +43,11 @@ import java.net.Socket;
  *     `-.._____..-'
  *
  */
-@ScriptManifest(category = Category.MISC, name = "cCMule", author = "camalCase", version = 1.2)
-public class Main extends AbstractScript {
+@ScriptManifest(category = Category.MISC, name = "cCMule", author = "camalCase", version = 1.3)
+public class Main extends AbstractScript implements InventoryListener {
     Config config = Config.getConfig();
+    // this will be reset constantly while there is packet, and reset when a packet is removed
+    Timer timeWaiting = new Timer(720000);
     @Override
     public void onStart() {
         ListenServer listenServer = new ListenServer();
@@ -59,6 +66,13 @@ public class Main extends AbstractScript {
                 return 1000;
             }
             Packet currentPacket = config.getMuleQueue().get(0);
+            // remove this packet / mule request from the queue if its > 8 minutes old
+            if (timeWaiting.finished()) {
+                config.getMuleQueue().remove(0);
+                timeWaiting.reset();
+                return 1000;
+            }
+
             if (Worlds.getCurrentWorld() != currentPacket.getWorldNum()) {
                 WorldHopper.hopWorld(currentPacket.getWorldNum());
                 MethodProvider.sleepUntil(() -> Worlds.getCurrentWorld() == currentPacket.getWorldNum(), 30000);
@@ -74,8 +88,15 @@ public class Main extends AbstractScript {
                 Trade.acceptTrade();
                 MethodProvider.sleep(3600, 4000);
                 Trade.acceptTrade();
-                log(Color.YELLOW, "TRADE ACCEPTED :D, popping - " + currentPacket.getUsername() + " from queue");
-                config.muleQueuePop();
+                log(Color.YELLOW, "TRADE ACCEPTED :D");
+                return 1000;
+            }
+        } else {
+            timeWaiting.reset();
+            if (Client.isLoggedIn()) {
+                getRandomManager().disableSolver(RandomEvent.LOGIN);
+                Tabs.logout();
+                MethodProvider.sleepUntil(() -> !Client.isLoggedIn(), 5000);
                 return 1000;
             }
         }
@@ -86,6 +107,12 @@ public class Main extends AbstractScript {
     public void onExit() {
         // this is to make sure the server closes down
         killServer();
+    }
+
+    @Override
+    public void onPaint(Graphics g) {
+        g.drawString("Queue size = " + config.getMuleQueue().size(), 10, 400);
+        g.drawString("time waiting = " + timeWaiting.formatTime(), 10, 420);
     }
 
     public static final String SERVER_IP = "127.0.0.1";
@@ -101,4 +128,14 @@ public class Main extends AbstractScript {
         }
     }
 
+    @Override
+    public void onItemChange(Item[] items) {
+        for (Item i : items) {
+            if (i.getName().equalsIgnoreCase("coins") && i.getAmount() > 0) {
+                config.getMuleQueue().remove(0);
+                timeWaiting.reset();
+                MethodProvider.log("popping - " + config.getMuleQueue().get(0).getUsername() + "from queue");
+            }
+        }
+    }
 }
