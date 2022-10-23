@@ -11,7 +11,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ListenServer implements Runnable{
+public class ListenServer implements Runnable {
     Config config = Config.getConfig();
     private static final int PORT = 9091;
     @Override
